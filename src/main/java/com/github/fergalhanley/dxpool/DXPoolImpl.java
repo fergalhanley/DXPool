@@ -51,51 +51,55 @@ public class DXPoolImpl<T> {
 		this.name = name;
 	}
 
-	public DXPoolImpl setMaxPoolSize(int maxPoolSize) throws Exception {
+	public DXPoolImpl setMaxPoolSize(int maxPoolSize) {
 		requireNotInitialized();
 		this.maxPoolSize = maxPoolSize;
 		return this;
 	}
 
-	public DXPoolImpl setMinPoolSize(int minPoolSize) throws Exception {
+	public DXPoolImpl setMinPoolSize(int minPoolSize) {
 		requireNotInitialized();
 		this.minPoolSize = minPoolSize;
 		return this;
 	}
 
-	public DXPoolImpl setPoolGrowthIncrement(int poolGrowthIncrement) throws Exception {
+	public DXPoolImpl setPoolGrowthIncrement(int poolGrowthIncrement) {
 		requireNotInitialized();
 		this.poolGrowthIncrement = poolGrowthIncrement;
 		return this;
 	}
 
-	public DXPoolImpl setGrowthThreshold(int growthThreshold) throws Exception {
+	public DXPoolImpl setGrowthThreshold(int growthThreshold) {
 		requireNotInitialized();
 		this.growthThreshold = growthThreshold;
 		return this;
 	}
 
-	public DXPoolImpl setInstanceLifeExpectancy(long instanceLifeExpectancy) throws Exception {
+	public DXPoolImpl setInstanceLifeExpectancy(long instanceLifeExpectancy) {
 		requireNotInitialized();
 		this.instanceLifeExpectancy = instanceLifeExpectancy;
 		return this;
 	}
 
-	public DXPoolImpl setWaitInterval(int waitInterval) throws Exception {
+	public DXPoolImpl setWaitInterval(int waitInterval) {
 		requireNotInitialized();
 		this.waitInterval = waitInterval;
 		return this;
 	}
 
-	public DXPoolImpl setWaitTimeout(int waitTimeout) throws Exception {
+	public DXPoolImpl setWaitTimeout(int waitTimeout) {
 		requireNotInitialized();
 		this.waitTimeout = waitTimeout;
 		return this;
 	}
 
-	private void requireNotInitialized() throws Exception {
+	private void requireNotInitialized() {
 		if (this.initializer != null) {
-			throw new Exception("Must set options before 'initialize'");
+			try {
+				throw new Exception("Must set options before 'initialize'");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -112,14 +116,18 @@ public class DXPoolImpl<T> {
 
 	/**
 	 * Sets the instance consumer method that executes before running the main execute consumer.
+	 *
 	 * @param consumer the functional method to execute
 	 * @return this (DXPoolImpl) object for chaining
-	 * @throws Exception
 	 */
-	public DXPoolImpl<T> before(Consumer<T> consumer) throws Exception {
+	public DXPoolImpl<T> before(Class<T> type, Consumer<T> consumer) {
 		Objects.requireNonNull(consumer);
 		if (this.consumeBefore != null) {
-			throw new Exception("Cannot set multiple 'before' consumers.");
+			try {
+				throw new Exception("Cannot set multiple 'before' consumers.");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		this.consumeBefore = consumer;
 		return this;
@@ -127,14 +135,18 @@ public class DXPoolImpl<T> {
 
 	/**
 	 * Sets the instance consumer method that executes after running the main execute consumer.
+	 *
 	 * @param consumer the functional method to execute
 	 * @return this (DXPoolImpl) object for chaining
-	 * @throws Exception
 	 */
-	public DXPoolImpl<T> after(Consumer<T> consumer) throws Exception {
+	public DXPoolImpl<T> after(Class<T> type, Consumer<T> consumer) {
 		Objects.requireNonNull(consumer);
 		if (this.consumeAfter != null) {
-			throw new Exception("Cannot set multiple 'after' consumers");
+			try {
+				throw new Exception("Cannot set multiple 'after' consumers");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		this.consumeAfter = consumer;
 		return this;
@@ -142,14 +154,18 @@ public class DXPoolImpl<T> {
 
 	/**
 	 * Sets the instance consumer method that executes just before the pool object instance expires and is returned to the pool.
+	 *
 	 * @param consumer the functional method to execute
 	 * @return this (DXPoolImpl) object for chaining
-	 * @throws Exception
 	 */
-	public DXPoolImpl<T> destroy(Consumer<T> consumer) throws Exception {
+	public DXPoolImpl<T> destroy(Class<T> type, Consumer<T> consumer) {
 		Objects.requireNonNull(consumer);
 		if (this.consumeDestroy != null) {
-			throw new Exception("'destroy' instance consumer already set");
+			try {
+				throw new Exception("'destroy' instance consumer already set");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		this.consumeDestroy = consumer;
 		return this;
@@ -157,12 +173,12 @@ public class DXPoolImpl<T> {
 
 	/**
 	 * Sets the initialization method that will be called to create the object to be pooled.
+	 *
 	 * @param initializer the functional initializer method to exute that will return the instance of the pool object
 	 * @return this (DXPoolImpl) object for chaining
-	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public DXPoolImpl<T> initialize(Initializer<T> initializer) throws Exception {
+	public DXPoolImpl<T> initialize(Class<T> type, Initializer<T> initializer) {
 		Objects.requireNonNull(initializer);
 		this.initializer = initializer;
 		if (pool.size() <= growthThreshold) {
@@ -176,10 +192,11 @@ public class DXPoolImpl<T> {
 
 	/**
 	 * Will execute the instance consumer on the current thread
+	 *
 	 * @param consumer the functional consumer method to be execute and passed the pooled object instance.
 	 */
 	@SuppressWarnings("unchecked")
-	public void execute(Consumer<T> consumer) throws Exception {
+	public void execute(Class<T> type, Consumer<T> consumer) {
 
 		if (pool.size() <= growthThreshold) {
 			new Thread(this::allocateInstances).start();
@@ -187,18 +204,23 @@ public class DXPoolImpl<T> {
 
 		long startedWaiting = System.currentTimeMillis();
 		while (pool.size() == 0) {
-			Thread.sleep(waitInterval);
-			if (System.currentTimeMillis() - startedWaiting >= waitTimeout) {
-				throw new Exception("Timed out waiting for available object on pool: " + name);
+			try {
+				Thread.sleep(waitInterval);
+				if (System.currentTimeMillis() - startedWaiting >= waitTimeout) {
+
+					throw new Exception("Timed out waiting for available object on pool: " + name);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
 		DXPoolInstance instance = pool.pop();
-		if(consumeBefore != null) {
+		if (consumeBefore != null) {
 			consumeBefore.consume(instance.getConsumable());
 		}
 		consumer.consume(instance.getConsumable());
-		if(consumeAfter != null) {
+		if (consumeAfter != null) {
 			consumeAfter.consume(instance.getConsumable());
 		}
 		pool.push(instance);
@@ -209,7 +231,7 @@ public class DXPoolImpl<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	private void allocateInstances() {
-		if(instanceCount >= maxPoolSize) {
+		if (instanceCount >= maxPoolSize) {
 			return;
 		}
 		for (int i = 0; i < poolGrowthIncrement; i++) {
@@ -218,8 +240,7 @@ public class DXPoolImpl<T> {
 				instance.setConsumable(initializer.initialize());
 				pool.push(instance);
 				instanceCount++;
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -259,9 +280,9 @@ public class DXPoolImpl<T> {
 
 		@Override
 		public void run() {
-			for(int i = pool.size() - 1; i >= minPoolSize; i--) {
-				if(System.currentTimeMillis() - pool.get(i).getCreated() >= instanceLifeExpectancy) {
-					if(consumeDestroy != null) {
+			for (int i = pool.size() - 1; i >= minPoolSize; i--) {
+				if (System.currentTimeMillis() - pool.get(i).getCreated() >= instanceLifeExpectancy) {
+					if (consumeDestroy != null) {
 						consumeDestroy.consume(pool.get(i).getConsumable());
 					}
 					pool.remove(i);
