@@ -49,7 +49,7 @@ DXPool.create("my-connection-pool")
       .before( myObject -> {
         System.out.println("Just about to use " + myObject.toString());
       })
-      .before( myObject -> {
+      .after( myObject -> {
         System.out.println("Just used " + myObject.toString());
       })
       .destroy( myObject -> {
