@@ -4,7 +4,7 @@
 
     <groupId>com.github.fergalhanley</groupId>
     <artifactId>dxpool</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
 
     <build>
         <finalName>${project.groupId}-${project.artifactId}-${project.version}</finalName>
@@ -42,6 +42,6 @@
         <connection>scm:git:git@github.com:fergalhanley/DXPool.git</connection>
         <url>scm:git:git@github.com:fergalhanley/DXPool.git</url>
         <developerConnection>scm:git:git@github.com:fergalhanley/DXPool.git</developerConnection>
-      <tag>dxpool-1.0</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
