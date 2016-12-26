@@ -21,6 +21,11 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -34,4 +39,10 @@
         </dependency>
     </dependencies>
 
+
+    <scm>
+        <connection>scm:git:git@github.com:fergalhanley/DXPool.git</connection>
+        <url>scm:git:git@github.com:fergalhanley/DXPool.git</url>
+        <developerConnection>scm:git:git@github.com:fergalhanley/DXPool.git</developerConnection>
+    </scm>
 </project>
