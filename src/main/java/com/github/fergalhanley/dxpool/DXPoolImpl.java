@@ -120,7 +120,8 @@ public class DXPoolImpl<T> {
 	 * @param consumer the functional method to execute
 	 * @return this (DXPoolImpl) object for chaining
 	 */
-	public DXPoolImpl<T> before(Class<T> type, Consumer<T> consumer) {
+	@SuppressWarnings("unchecked")
+	public DXPoolImpl<T> before(Consumer<T> consumer) {
 		Objects.requireNonNull(consumer);
 		if (this.consumeBefore != null) {
 			try {
@@ -139,7 +140,8 @@ public class DXPoolImpl<T> {
 	 * @param consumer the functional method to execute
 	 * @return this (DXPoolImpl) object for chaining
 	 */
-	public DXPoolImpl<T> after(Class<T> type, Consumer<T> consumer) {
+	@SuppressWarnings("unchecked")
+	public DXPoolImpl<T> after(Consumer<T> consumer) {
 		Objects.requireNonNull(consumer);
 		if (this.consumeAfter != null) {
 			try {
@@ -158,7 +160,8 @@ public class DXPoolImpl<T> {
 	 * @param consumer the functional method to execute
 	 * @return this (DXPoolImpl) object for chaining
 	 */
-	public DXPoolImpl<T> destroy(Class<T> type, Consumer<T> consumer) {
+	@SuppressWarnings("unchecked")
+	public DXPoolImpl<T> destroy(Consumer<T> consumer) {
 		Objects.requireNonNull(consumer);
 		if (this.consumeDestroy != null) {
 			try {
@@ -178,7 +181,7 @@ public class DXPoolImpl<T> {
 	 * @return this (DXPoolImpl) object for chaining
 	 */
 	@SuppressWarnings("unchecked")
-	public DXPoolImpl<T> initialize(Class<T> type, Initializer<T> initializer) {
+	public DXPoolImpl<T> initialize(Initializer<T> initializer) {
 		Objects.requireNonNull(initializer);
 		this.initializer = initializer;
 		if (pool.size() <= growthThreshold) {
@@ -196,7 +199,7 @@ public class DXPoolImpl<T> {
 	 * @param consumer the functional consumer method to be execute and passed the pooled object instance.
 	 */
 	@SuppressWarnings("unchecked")
-	public void execute(Class<T> type, Consumer<T> consumer) {
+	public void execute(Consumer<T> consumer) {
 
 		if (pool.size() <= growthThreshold) {
 			new Thread(this::allocateInstances).start();

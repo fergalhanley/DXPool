@@ -1,12 +1,15 @@
 import com.github.fergalhanley.dxpool.DXPool;
 import org.junit.Test;
 
+import java.sql.DriverManager;
+
 public class PoolTests {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void createPool() throws Exception {
+	public void createPool() {
 
+		DXPool.create("db").initialize(() -> DriverManager.getConnection(""));
 
 		DXPool.create("my-connection-pool")
 				.before(testPoolObj -> System.out.println("before"))
@@ -18,7 +21,7 @@ public class PoolTests {
 		for(int i = 0; i < 10; i++) {
 
 			final int finalI = i;
-			DXPool.with("my-connection-pool").execute( o -> {
+			DXPool.with("my-connection-pool").execute(o -> {
 
 				TestPoolObject tpo = (TestPoolObject)o;
 				String result = tpo.doTheThing();
